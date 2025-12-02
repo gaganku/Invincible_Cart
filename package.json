@@ -1,0 +1,35 @@
+{
+  "name": "shopping_cart_react",
+  "version": "1.0.0",
+  "description": "Shopping Cart with React Frontend and Node.js Microservices Backend",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && cd client && npm install",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "concurrently \"node services/gateway/server.js\" \"node services/auth/server.js\" \"node services/products/server.js\" \"node services/orders/server.js\"",
+    "client": "cd client && npm run dev",
+    "start": "npm run dev",
+    "build": "cd client && npm run build"
+  },
+  "keywords": ["react", "nodejs", "microservices", "shopping-cart"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "concurrently": "^9.2.1",
+    "connect-mongo": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "http-proxy-middleware": "^3.0.5",
+    "mongoose": "^8.20.1",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.10",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "twilio": "^5.10.6",
+    "uuid": "^13.0.0",
+    "xlsx": "^0.18.5"
+  }
+}
