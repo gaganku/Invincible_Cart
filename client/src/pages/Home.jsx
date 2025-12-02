@@ -19,6 +19,7 @@ function Home() {
   const toast = useToast();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   // Load products on mount
   useEffect(() => {
@@ -63,15 +64,31 @@ function Home() {
     setSelectedProduct(product);
   };
 
-  // Pagination calculations
-  const indexOfLast = currentPage * productsPerPage;
-  const indexOfFirst = indexOfLast - productsPerPage;
-  const currentProducts = products.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(products.length / productsPerPage);
+
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Extract unique categories from all products
+  const allCategories = ['All', ...new Set(products.flatMap(p => p.categories || []))];
+
+  // Filter products by selected category
+  const filteredProducts = selectedCategory === 'All' 
+    ? products 
+    : products.filter(p => p.categories && p.categories.includes(selectedCategory));
+
+  // Pagination calculations using filtered products
+  const indexOfLastFiltered = currentPage * productsPerPage;
+  const indexOfFirstFiltered = indexOfLastFiltered - productsPerPage;
+  const currentFilteredProducts = filteredProducts.slice(indexOfFirstFiltered, indexOfLastFiltered);
+  const totalFilteredPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+  // Reset to page 1 when category changes
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
   };
 
   if (loading) {
@@ -96,8 +113,27 @@ function Home() {
             </p>
           )}
         </div>
+        
+        {/* Category Filter */}
+        {allCategories.length > 1 && (
+          <div className="category-filter">
+            <h3>Filter by Category:</h3>
+            <div className="category-buttons">
+              {allCategories.map((category) => (
+                <button
+                  key={category}
+                  className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
+                  onClick={() => handleCategoryChange(category)}
+                >
+                  {category === 'All' ? '🌟 All Products' : category}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        
         <div className="products-grid">
-          {currentProducts.map((product) => (
+          {currentFilteredProducts.map((product) => (
             <div key={product._id} className="product-card" onClick={() => handleCardClick(product)}>
               <div style={{ position: 'relative', overflow: 'hidden' }}>
                 <img src={product.image} alt={product.name} className="product-image" />
@@ -114,6 +150,13 @@ function Home() {
               </div>
               <div className="product-info">
                 <h3 className="product-name">{product.name}</h3>
+                {product.categories && product.categories.length > 0 && (
+                  <div className="product-categories-home">
+                    {product.categories.map((cat, idx) => (
+                      <span key={idx} className="category-tag-home">{cat}</span>
+                    ))}
+                  </div>
+                )}
                 <p className="product-description">{product.description}</p>
                 <div className="product-footer">
                   <div className="product-price">${product.price.toFixed(2)}</div>
@@ -134,11 +177,11 @@ function Home() {
             </div>
           ))}
         </div>
-        {products.length > productsPerPage && (
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+        {filteredProducts.length > productsPerPage && (
+          <Pagination currentPage={currentPage} totalPages={totalFilteredPages} onPageChange={handlePageChange} />
         )}
-        {products.length === 0 && !loading && (
-          <div className="no-products"><p>No products found. Check back later!</p></div>
+        {filteredProducts.length === 0 && !loading && (
+          <div className="no-products"><p>No products found in this category. Try a different filter!</p></div>
         )}
         {/* Modal for product details */}
         {selectedProduct && (

@@ -27,7 +27,8 @@ function Admin() {
     description: '',
     image: '',
     price: '',
-    stock: ''
+    stock: '',
+    categories: ''
   });
 
   // Search and Filter State
@@ -150,7 +151,8 @@ function Admin() {
       description: '',
       image: '',
       price: '',
-      stock: ''
+      stock: '',
+      categories: ''
     });
     setShowProductForm(true);
   };
@@ -162,7 +164,8 @@ function Admin() {
       description: product.description,
       image: product.image,
       price: product.price.toString(),
-      stock: product.stock.toString()
+      stock: product.stock.toString(),
+      categories: (product.categories || []).join(', ')
     });
     setShowProductForm(true);
   };
@@ -173,7 +176,11 @@ function Admin() {
       const productData = {
         ...productForm,
         price: parseFloat(productForm.price),
-        stock: parseInt(productForm.stock)
+        stock: parseInt(productForm.stock),
+        categories: productForm.categories
+          .split(',')
+          .map(cat => cat.trim())
+          .filter(cat => cat.length > 0)
       };
 
       if (editingProduct) {
@@ -582,6 +589,17 @@ function Admin() {
                         />
                       </div>
                     </div>
+                    <div className="form-group">
+                      <label>Categories (comma-separated)</label>
+                      <input 
+                        type="text" 
+                        name="categories"
+                        value={productForm.categories}
+                        onChange={handleProductFormChange}
+                        placeholder="e.g., Electronics, Gaming, Accessories"
+                      />
+                      <small className="form-hint">💡 Enter multiple categories separated by commas</small>
+                    </div>
                     <div className="form-actions">
                       <button type="submit" className="btn-save">
                         💾 {editingProduct ? 'Update' : 'Add'} Product
@@ -609,6 +627,7 @@ function Admin() {
                       <th>Image</th>
                       <th>Name</th>
                       <th>Description</th>
+                      <th>Categories</th>
                       <th>Price</th>
                       <th>Stock</th>
                       <th>Actions</th>
@@ -622,6 +641,17 @@ function Admin() {
                         </td>
                         <td className="product-name">{product.name}</td>
                         <td className="product-desc">{product.description}</td>
+                        <td className="product-categories">
+                          {(product.categories && product.categories.length > 0) ? (
+                            <div className="category-tags">
+                              {product.categories.map((cat, idx) => (
+                                <span key={idx} className="category-tag">{cat}</span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="no-categories">—</span>
+                          )}
+                        </td>
                         <td className="price">${product.price.toFixed(2)}</td>
                         <td>
                           <span className={`stock-badge ${product.stock > 5 ? 'stock-good' : product.stock > 0 ? 'stock-low' : 'stock-out'}`}>
