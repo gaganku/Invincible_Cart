@@ -17,7 +17,7 @@ function Admin() {
   const [ordersPage, setOrdersPage] = useState(1);
   const [usersPage, setUsersPage] = useState(1);
   const [productsPage, setProductsPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 7;
   
   // Product form state
   const [showProductForm, setShowProductForm] = useState(false);

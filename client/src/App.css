@@ -1,13 +1,13 @@
 /* Global Theme Variables */
 :root[data-theme="dark"] {
-  --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --bg-secondary: rgba(255, 255, 255, 0.08);
-  --bg-card: rgba(255, 255, 255, 0.12);
-  --bg-card-hover: rgba(255, 255, 255, 0.18);
+  --bg-primary: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  --bg-secondary: rgba(255, 255, 255, 0.05);
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --bg-card-hover: rgba(30, 41, 59, 0.9);
   
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.95);
-  --text-muted: rgba(255, 255, 255, 0.7);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
   
   --gradient-text: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
   --gradient-button: linear-gradient(135deg, #667eea, #764ba2);
@@ -59,15 +59,23 @@
   box-sizing: border-box;
 }
 
+html {
+  height: auto !important;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background 0.3s ease, color 0.3s ease;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  height: auto !important;
 }
 
+
+
 .app {
-  min-height: 100vh;
   background: var(--bg-primary);
   color: var(--text-primary);
   transition: all 0.3s ease;

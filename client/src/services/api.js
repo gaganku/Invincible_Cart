@@ -1,7 +1,7 @@
 // API Service helper functions
 // HARDCODED TO LOCALHOST - NO PRODUCTION URLS
 
-const API_BASE = 'http://localhost:3000';  // Always use localhost
+const API_BASE = '';  // Use relative path to leverage Vite proxy
 
 export const api = {
   // Auth endpoints

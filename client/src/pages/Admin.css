@@ -109,7 +109,6 @@
 
 /* Base Styles */
 .admin-page {
-  min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
   overflow-x: hidden;
@@ -171,7 +170,7 @@
 /* Glossy Buttons */
 .btn-download,
 .btn-add {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -201,11 +200,17 @@
   height: 100%;
   background: linear-gradient(
     90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
+    transparent 0%,
+    rgba(167, 139, 250, 0.6) 15%,
+    rgba(134, 239, 172, 0.6) 30%,
+    rgba(252, 211, 77, 0.6) 45%,
+    rgba(103, 232, 249, 0.6) 60%,
+    rgba(249, 168, 212, 0.6) 75%,
+    rgba(252, 165, 165, 0.6) 90%,
+    transparent 100%
   );
   transition: left 0.6s ease;
+  pointer-events: none;
 }
 
 .btn-download:hover::before,
@@ -620,11 +625,14 @@
 .orders-table thead,
 .users-table thead,
 .products-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   color: white;
   box-shadow: 
-    0 4px 15px rgba(102, 126, 234, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 4px 15px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .orders-table thead tr,
@@ -809,11 +817,13 @@
   font-weight: 700;
   text-transform: capitalize;
   display: inline-block;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
 
@@ -841,18 +851,21 @@
 }
 
 .badge-admin {
-  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-  color: #1e40af;
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.15), rgba(30, 64, 175, 0.05));
+  color: #60a5fa;
+  border: 1px solid rgba(30, 64, 175, 0.2);
 }
 
 .badge-user {
-  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-  color: #374151;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .badge-verified {
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-  color: #065f46;
+  background: linear-gradient(135deg, rgba(6, 95, 70, 0.15), rgba(6, 95, 70, 0.05));
+  color: #34d399;
+  border: 1px solid rgba(6, 95, 70, 0.2);
 }
 
 .badge-unverified {
@@ -930,22 +943,33 @@
   overflow: hidden;
 }
 
-.btn-action::before {
+.btn-action::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(167, 139, 250, 0.6) 15%,
+    rgba(134, 239, 172, 0.6) 30%,
+    rgba(252, 211, 77, 0.6) 45%,
+    rgba(103, 232, 249, 0.6) 60%,
+    rgba(249, 168, 212, 0.6) 75%,
+    rgba(252, 165, 165, 0.6) 90%,
+    transparent 100%
+  );
+  transition: left 0.6s ease;
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
-.btn-action:hover::before {
-  width: 300px;
-  height: 300px;
+.btn-action:hover::after {
+  left: 100%;
+  opacity: 1;
 }
 
 .btn-action:hover {
@@ -958,18 +982,21 @@
 }
 
 .btn-toggle {
-  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-  color: #1e40af;
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.1), rgba(30, 64, 175, 0.05));
+  color: #60a5fa;
+  border: 1px solid rgba(30, 64, 175, 0.2);
 }
 
 .btn-edit {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  color: #92400e;
+  background: linear-gradient(135deg, rgba(146, 64, 14, 0.1), rgba(146, 64, 14, 0.05));
+  color: #fbbf24;
+  border: 1px solid rgba(146, 64, 14, 0.2);
 }
 
 .btn-delete {
-  background: linear-gradient(135deg, #fee2e2, #fecaca);
-  color: #991b1b;
+  background: linear-gradient(135deg, rgba(153, 27, 27, 0.1), rgba(153, 27, 27, 0.05));
+  color: #f87171;
+  border: 1px solid rgba(153, 27, 27, 0.2);
 }
 
 /* Glossy Product Form Modal */
@@ -1093,9 +1120,11 @@
 
 .btn-save {
   flex: 1;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 1.2rem;
   border-radius: 15px;
   cursor: pointer;
@@ -1109,22 +1138,33 @@
   overflow: hidden;
 }
 
-.btn-save::before {
+.btn-save::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(167, 139, 250, 0.6) 15%,
+    rgba(134, 239, 172, 0.6) 30%,
+    rgba(252, 211, 77, 0.6) 45%,
+    rgba(103, 232, 249, 0.6) 60%,
+    rgba(249, 168, 212, 0.6) 75%,
+    rgba(252, 165, 165, 0.6) 90%,
+    transparent 100%
+  );
+  transition: left 0.6s ease;
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
-.btn-save:hover::before {
-  width: 400px;
-  height: 400px;
+.btn-save:hover::after {
+  left: 100%;
+  opacity: 1;
 }
 
 .btn-save:hover {
@@ -1136,9 +1176,11 @@
 
 .btn-cancel {
   flex: 1;
-  background: linear-gradient(135deg, rgba(229, 231, 235, 0.9), rgba(209, 213, 219, 0.9));
-  color: #333;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 1.2rem;
   border-radius: 15px;
   cursor: pointer;
@@ -1148,6 +1190,37 @@
   box-shadow: 
     0 8px 25px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-cancel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(167, 139, 250, 0.6) 15%,
+    rgba(134, 239, 172, 0.6) 30%,
+    rgba(252, 211, 77, 0.6) 45%,
+    rgba(103, 232, 249, 0.6) 60%,
+    rgba(249, 168, 212, 0.6) 75%,
+    rgba(252, 165, 165, 0.6) 90%,
+    transparent 100%
+  );
+  transition: left 0.6s ease;
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.btn-cancel:hover::after {
+  left: 100%;
+  opacity: 1;
 }
 
 .btn-cancel:hover {
@@ -1211,14 +1284,16 @@
 .category-tag {
   display: inline-block;
   padding: 0.4rem 0.8rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(102, 126, 234, 0.05));
+  backdrop-filter: blur(10px);
+  color: #a5b4fc;
   border-radius: 12px;
   font-size: 0.85rem;
   font-weight: 600;
   box-shadow: 
-    0 2px 10px rgba(102, 126, 234, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 2px 10px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.2);
   transition: all 0.3s ease;
   cursor: default;
 }

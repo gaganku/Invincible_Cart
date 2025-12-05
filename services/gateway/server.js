@@ -3,8 +3,22 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const path = require('path');
 const cors = require('cors');
 
+const rateLimit = require('express-rate-limit');
+
 const app = express();
 const PORT = 3000;  // HARDCODED LOCALHOST PORT
+
+// Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// Apply rate limiting to all requests
+app.use(limiter);
 
 // CORS
 app.use(cors({

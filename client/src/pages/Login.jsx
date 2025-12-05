@@ -32,6 +32,7 @@ function Login() {
         }
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('Login failed. Please try again.');
     } finally {
       setLoading(false);

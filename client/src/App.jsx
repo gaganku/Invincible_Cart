@@ -81,7 +81,7 @@ function App() {
               </AdminRoute>
             } />
           </Routes>
-          <SquareBot />
+           <SquareBot /> 
         </div>
       </AuthProvider>
     </ToastProvider>
