@@ -350,7 +350,8 @@ app.post('/api/products', isAdmin, async (req, res) => {
 
 app.patch('/api/products/:id', isAdmin, async (req, res) => {
     try {
-        const product = await Product.findOneAndUpdate({ id: req.params.id }, req.body, { new: true });
+        const query = mongoose.Types.ObjectId.isValid(req.params.id) ? { _id: req.params.id } : { id: req.params.id };
+        const product = await Product.findOneAndUpdate(query, req.body, { new: true });
         if (!product) return res.status(404).json({ error: 'Product not found' });
         res.json(product);
     } catch (err) {
@@ -360,7 +361,8 @@ app.patch('/api/products/:id', isAdmin, async (req, res) => {
 
 app.delete('/api/products/:id', isAdmin, async (req, res) => {
     try {
-        const product = await Product.findOneAndDelete({ id: req.params.id });
+        const query = mongoose.Types.ObjectId.isValid(req.params.id) ? { _id: req.params.id } : { id: req.params.id };
+        const product = await Product.findOneAndDelete(query);
         if (!product) return res.status(404).json({ error: 'Product not found' });
         res.json({ message: 'Product deleted' });
     } catch (err) {
