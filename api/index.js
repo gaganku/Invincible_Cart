@@ -348,9 +348,13 @@ app.post('/api/products', isAdmin, async (req, res) => {
     }
 });
 
+const getProductQuery = (id) => {
+    return mongoose.Types.ObjectId.isValid(id) ? { _id: id } : { id: Number(id) || id };
+};
+
 app.patch('/api/products/:id', isAdmin, async (req, res) => {
     try {
-        const query = mongoose.Types.ObjectId.isValid(req.params.id) ? { _id: req.params.id } : { id: req.params.id };
+        const query = getProductQuery(req.params.id);
         const product = await Product.findOneAndUpdate(query, req.body, { new: true });
         if (!product) return res.status(404).json({ error: 'Product not found' });
         res.json(product);
@@ -361,7 +365,7 @@ app.patch('/api/products/:id', isAdmin, async (req, res) => {
 
 app.delete('/api/products/:id', isAdmin, async (req, res) => {
     try {
-        const query = mongoose.Types.ObjectId.isValid(req.params.id) ? { _id: req.params.id } : { id: req.params.id };
+        const query = getProductQuery(req.params.id);
         const product = await Product.findOneAndDelete(query);
         if (!product) return res.status(404).json({ error: 'Product not found' });
         res.json({ message: 'Product deleted' });
@@ -385,7 +389,8 @@ app.get('/api/cart', isAuthenticated, async (req, res) => {
 app.post('/api/cart', isAuthenticated, async (req, res) => {
     try {
         const { productId } = req.body;
-        const product = await Product.findById(productId);
+        const query = getProductQuery(productId);
+        const product = await Product.findOne(query);
         if (!product || product.stock <= 0) return res.status(400).json({ error: 'Out of stock' });
 
         product.stock -= 1;
@@ -413,7 +418,8 @@ app.delete('/api/cart/:productId', isAuthenticated, async (req, res) => {
 
         const item = cart.items.find(i => i.productId.toString() === req.params.productId);
         if (item) {
-            await Product.findByIdAndUpdate(req.params.productId, { $inc: { stock: item.quantity } });
+            const query = getProductQuery(req.params.productId);
+            await Product.findOneAndUpdate(query, { $inc: { stock: item.quantity } });
             cart.items = cart.items.filter(i => i.productId.toString() !== req.params.productId);
             await cart.save();
         }
