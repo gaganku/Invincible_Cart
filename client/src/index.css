@@ -66,4 +66,35 @@ button:focus-visible {
   }
 }
 
+/* Global Emoji Styles - Ensure emojis display in native colors */
+.emoji,
+.avatar-emoji,
+.avatar-option-emoji,
+.action-icon,
+.setting-icon,
+[class*="emoji"],
+span:has(> img[alt*="emoji"]) {
+  color: initial !important;
+  -webkit-text-fill-color: initial !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif !important;
+}
 
+/* Fix for emoji rendering in all themes */
+[data-theme="dark"] .emoji,
+[data-theme="dark"] .avatar-emoji,
+[data-theme="dark"] .avatar-option-emoji,
+[data-theme="dark"] .action-icon,
+[data-theme="dark"] .setting-icon,
+[data-theme="light"] .emoji,
+[data-theme="light"] .avatar-emoji,
+[data-theme="light"] .avatar-option-emoji,
+[data-theme="light"] .action-icon,
+[data-theme="light"] .setting-icon {
+  color: initial !important;
+  -webkit-text-fill-color: initial !important;
+  filter: none !important;
+  opacity: 1 !important;
+}

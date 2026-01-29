@@ -1,4 +1,4 @@
-/* UPI Payment Modal - Premium Glossy Edition */
+/* UPI Payment Modal - Dark Glossy Edition */
 
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -36,8 +36,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,9 +47,9 @@
 }
 
 .upi-modal {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  background: linear-gradient(135deg, rgba(30, 30, 46, 0.95), rgba(20, 20, 35, 0.98));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 30px;
   padding: 2.5rem;
   max-width: 500px;
@@ -57,12 +57,13 @@
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 0 0 2px rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.4);
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: #ffffff;
 }
 
 .upi-modal::before {
@@ -75,11 +76,11 @@
   background: linear-gradient(
     45deg,
     transparent 30%,
-    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.03) 50%,
     transparent 70%
   );
   transform: rotate(45deg);
-  animation: shimmer 3s infinite;
+  animation: shimmer 5s infinite;
   pointer-events: none;
 }
 
@@ -87,23 +88,23 @@
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.1);
   border: none;
   border-radius: 50%;
   width: 40px;
   height: 40px;
   font-size: 2rem;
-  color: #666;
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
+  z-index: 10;
 }
 
 .upi-close:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   transform: rotate(90deg);
 }
 
@@ -124,32 +125,32 @@
   margin: 0 0 0.5rem 0;
   font-size: 2rem;
   font-weight: 900;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #a78bfa, #60a5fa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .upi-header p {
-  color: #666;
+  color: #cbd5e1;
   margin: 0;
   font-size: 1rem;
 }
 
 .upi-amount {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.05));
   border-radius: 20px;
   padding: 1.5rem;
   text-align: center;
   margin-bottom: 1.5rem;
-  border: 2px solid rgba(102, 126, 234, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.2);
   position: relative;
   z-index: 1;
 }
 
 .upi-amount span {
   display: block;
-  color: #667eea;
+  color: #a78bfa;
   font-weight: 700;
   text-transform: uppercase;
   font-size: 0.9rem;
@@ -160,18 +161,19 @@
 .amount-value {
   font-size: 3rem;
   font-weight: 900;
-  color: #1a202c;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
 }
 
 .upi-timer {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #f59e0b;
+  color: #fbbf24;
   font-weight: 700;
   font-size: 1rem;
   position: relative;
   z-index: 1;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
 }
 
 .upi-qr-section {
@@ -187,14 +189,13 @@
   border-radius: 20px;
   display: inline-block;
   box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  border: 2px solid rgba(102, 126, 234, 0.2);
+    0 8px 25px rgba(0, 0, 0, 0.3),
+    0 0 0 4px rgba(255, 255, 255, 0.1);
   margin-bottom: 1rem;
 }
 
 .qr-instruction {
-  color: #666;
+  color: #cbd5e1;
   font-size: 0.95rem;
   font-weight: 600;
   margin: 0;
@@ -213,20 +214,21 @@
   position: absolute;
   top: 50%;
   width: 40%;
-  height: 2px;
-  background: linear-gradient(to right, transparent, rgba(102, 126, 234, 0.3), transparent);
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
 .upi-divider::before { left: 0; }
 .upi-divider::after { right: 0; }
 
 .upi-divider span {
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   padding: 0.5rem 1.5rem;
   border-radius: 20px;
-  color: #667eea;
+  color: #a78bfa;
   font-weight: 700;
   font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .upi-id-section {
@@ -237,7 +239,7 @@
 
 .upi-id-section label {
   display: block;
-  color: #667eea;
+  color: #a78bfa;
   font-weight: 700;
   margin-bottom: 0.75rem;
   font-size: 0.95rem;
@@ -247,10 +249,10 @@
 
 .upi-id-display {
   display: flex;
-  background: rgba(102, 126, 234, 0.05);
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 15px;
   padding: 1rem 1.5rem;
-  border: 2px solid rgba(102, 126, 234, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   align-items: center;
   gap: 1rem;
 }
@@ -258,8 +260,9 @@
 .upi-id-display span {
   flex: 1;
   font-weight: 700;
-  color: #1a202c;
+  color: #ffffff;
   font-size: 1.1rem;
+  font-family: monospace;
 }
 
 .copy-btn {
@@ -287,7 +290,7 @@
 }
 
 .upi-apps p {
-  color: #666;
+  color: #cbd5e1;
   font-weight: 600;
   margin-bottom: 1rem;
 }
@@ -300,19 +303,20 @@
 }
 
 .app-icon {
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   padding: 0.6rem 1.2rem;
   border-radius: 12px;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #667eea;
-  border: 2px solid rgba(102, 126, 234, 0.2);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
 
 .app-icon:hover {
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .simulate-payment-btn {
@@ -350,11 +354,12 @@
 .processing-spinner {
   width: 80px;
   height: 80px;
-  border: 6px solid rgba(102, 126, 234, 0.2);
-  border-top-color: #667eea;
+  border: 6px solid rgba(139, 92, 246, 0.1);
+  border-top-color: #8b5cf6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 2rem;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
 }
 
 .success-icon,
@@ -371,15 +376,15 @@
 }
 
 .success-icon {
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-  color: #065f46;
-  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
 }
 
 .failed-icon {
-  background: linear-gradient(135deg, #fee2e2, #fecaca);
-  color: #991b1b;
-  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: white;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
 }
 
 .payment-processing h3,
@@ -388,13 +393,13 @@
   font-size: 1.8rem;
   font-weight: 800;
   margin: 0 0 0.5rem 0;
-  color: #1a202c;
+  color: #ffffff;
 }
 
 .payment-processing p,
 .payment-success p,
 .payment-failed p {
-  color: #666;
+  color: #cbd5e1;
   margin: 0;
   font-size: 1rem;
 }
@@ -416,11 +421,480 @@
   box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
+/* Glossy Components - Dark Mode */
+.glossy-box {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  padding: 1rem;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.glossy-input {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: #000000;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.glossy-input::placeholder {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.glossy-input:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  background: #ffffff;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+}
+
+.glossy-btn {
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.glossy-btn:hover {
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.upi-apps {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.upi-apps p {
+  color: #cbd5e1;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.app-icons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.app-icon {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.app-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Actions Row for Buttons */
+.actions-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  align-items: stretch; /* Ensure same height */
+}
+
+.actions-row.payment-actions {
+  margin-bottom: 0;
+  margin-top: 1.5rem;
+}
+
+/* Override width for buttons inside actions-row */
+.actions-row .glossy-btn-primary,
+.actions-row .simulate-payment-btn {
+  width: auto;
+  flex: 2; /* Primary button takes twice the space */
+  margin-top: 0;
+}
+
+.actions-row .glossy-btn-secondary {
+  flex: 1; /* Secondary button takes single space */
+  margin: 0;
+  width: auto;
+}
+
+/* Premium Shimmer Buttons */
+.glossy-btn-primary,
+.glossy-btn-secondary,
+.simulate-payment-btn,
+.retry-btn {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: white;
+  padding: 1rem;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 
+    0 8px 25px rgba(102, 126, 234, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Compact Copy Button */
+.copy-btn {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  width: auto;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Primary Buttons Layout (Default) */
+.glossy-btn-primary,
+.simulate-payment-btn,
+.retry-btn {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Secondary Buttons Layout (Default) */
+.glossy-btn-secondary {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.glossy-btn-primary::after,
+.glossy-btn-secondary::after,
+.simulate-payment-btn::after,
+.retry-btn::after,
+.copy-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(167, 139, 250, 0.6) 15%,
+    rgba(134, 239, 172, 0.6) 30%,
+    rgba(252, 211, 77, 0.6) 45%,
+    rgba(103, 232, 249, 0.6) 60%,
+    rgba(249, 168, 212, 0.6) 75%,
+    rgba(252, 165, 165, 0.6) 90%,
+    transparent 100%
+  );
+  transition: left 0.6s ease;
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.glossy-btn-primary:hover::after,
+.glossy-btn-secondary:hover::after,
+.simulate-payment-btn:hover::after,
+.retry-btn:hover::after,
+.copy-btn:hover::after {
+  left: 100%;
+  opacity: 1;
+}
+
+.glossy-btn-primary:hover,
+.glossy-btn-secondary:hover,
+.simulate-payment-btn:hover,
+.retry-btn:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 12px 35px rgba(102, 126, 234, 0.5),
+    0 0 30px rgba(102, 126, 234, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.copy-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Payment States */
+.payment-processing,
+.payment-success,
+.payment-failed {
+  text-align: center;
+  padding: 3rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.processing-spinner {
+  width: 80px;
+  height: 80px;
+  border: 6px solid rgba(139, 92, 246, 0.1);
+  border-top-color: #8b5cf6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 2rem;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+.success-icon,
+.failed-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  margin: 0 auto 1.5rem;
+  animation: pulse 1s ease;
+}
+
+.success-icon {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+}
+
+.failed-icon {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: white;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+}
+
+.payment-processing h3,
+.payment-success h3,
+.payment-failed h3 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  color: #ffffff;
+}
+
+.payment-processing p,
+.payment-success p,
+.payment-failed p {
+  color: #cbd5e1;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Glossy Components - Dark Mode */
+.glossy-box {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  padding: 1rem;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.glossy-input {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: #000000;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.glossy-input::placeholder {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.glossy-input:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  background: #ffffff;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+}
+
+.glossy-btn {
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.glossy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Steps Animation */
+.step-container {
+  animation: fadeIn 0.5s ease;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Order Summary */
+.order-summary {
+  text-align: center;
+  padding: 2rem;
+}
+
+.success-icon-small {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.summary-details {
+  margin: 1.5rem 0;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.8rem;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.summary-row span {
+  color: #a0aec0;
+  font-size: 0.95rem;
+}
+
+.summary-row strong {
+  color: white;
+  font-size: 1rem;
+}
+
+.summary-row p {
+  margin: 0;
+  color: #e2e8f0;
+  text-align: right;
+  max-width: 60%;
+  line-height: 1.4;
+}
+
+.form-group label {
+  display: block;
+  color: #ffffff !important;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Custom Scrollbar for Modal */
+.upi-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.upi-modal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.upi-modal::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.upi-modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Fix extra space on right */
+.upi-modal {
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  box-sizing: border-box; /* Include padding in width */
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .upi-modal {
     padding: 2rem 1.5rem;
     margin: 10px;
+  }
+
+  .actions-row {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .glossy-btn-secondary {
+    width: 100%;
   }
 
   .amount-value {

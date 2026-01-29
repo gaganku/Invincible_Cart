@@ -136,7 +136,7 @@ function Home() {
       <Navbar />
       <div className="home-container">
         <div className="home-header">
-          <h1>🛒 Welcome to Shopping Cart</h1>
+          <h1><span className="emoji">🛒</span> Welcome to Shopping Cart</h1>
           <p>Discover amazing products at great prices</p>
           {user && (
             <p style={{ marginTop: '1rem', color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem' }}>
@@ -149,7 +149,6 @@ function Home() {
         <div className="search-filter-container">
           <div className="search-wrapper">
             <div className="search-input-group">
-              <span className="search-icon">🔍</span>
               <input
                 type="text"
                 className="search-input"
@@ -162,6 +161,7 @@ function Home() {
                   ✕
                 </button>
               )}
+              <span className="search-icon">🔍</span>
             </div>
             
             <button 

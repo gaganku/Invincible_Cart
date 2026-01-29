@@ -12,7 +12,10 @@ import Profile from './pages/Profile';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
 import Admin from './pages/Admin';
+import ProductForm from './pages/ProductForm';
 import SquareBot from './components/SquareBot';
+import SakuraBackground from './components/SakuraBackground';
+import InteractiveBackground from './components/InteractiveBackground';
 import './App.css';
 import './theme.css';
 
@@ -45,6 +48,8 @@ function App() {
         <ToastProvider>
           <AuthProvider>
         <div className="app">
+          <InteractiveBackground />
+          <SakuraBackground />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
@@ -78,6 +83,18 @@ function App() {
             <Route path="/admin" element={
               <AdminRoute>
                 <Admin />
+              </AdminRoute>
+            } />
+            
+            <Route path="/admin/product/new" element={
+              <AdminRoute>
+                <ProductForm />
+              </AdminRoute>
+            } />
+            
+            <Route path="/admin/product/edit/:id" element={
+              <AdminRoute>
+                <ProductForm />
               </AdminRoute>
             } />
           </Routes>

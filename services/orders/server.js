@@ -268,12 +268,16 @@ app.post('/api/cart/checkout', isAuthenticated, async (req, res) => {
 
             // Determine order status based on payment
             const orderStatus = paymentData && paymentData.status === 'confirmed' ? 'confirmed' : 'pending';
+            const shippingAddress = paymentData ? paymentData.shippingAddress : '';
+            const phoneNumber = paymentData ? paymentData.phoneNumber : '';
             
             const order = new Order({
                 userId: user._id,
                 productId: product._id,
                 amount: product.price * item.quantity,
                 status: orderStatus, // Set to 'confirmed' if payment successful
+                shippingAddress,
+                phoneNumber,
                 date: new Date()
             });
 

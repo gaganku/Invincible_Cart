@@ -93,7 +93,7 @@ function Cart() {
       
       <div className="cart-container">
         <div className="cart-header">
-          <h1>🛒 Your Cart</h1>
+          <h1><span className="emoji">🛒</span> Your Cart</h1>
           <p>Review your items before checkout</p>
         </div>
 

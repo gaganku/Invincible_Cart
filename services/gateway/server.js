@@ -11,7 +11,7 @@ const PORT = 3000;  // HARDCODED LOCALHOST PORT
 // Rate Limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
+    max: 1000, // Limit each IP to 1000 requests per windowMs
     message: 'Too many requests from this IP, please try again later.',
     standardHeaders: true,
     legacyHeaders: false,
@@ -55,6 +55,11 @@ const orderProxy = createProxyMiddleware({
 // Manual Routing to prevent path stripping
 app.use((req, res, next) => {
     const reqPath = req.path;
+
+    // Auth Service - User Profile (must be before Order service /api/user/orders check)
+    if (reqPath.startsWith('/api/user/profile')) {
+        return authProxy(req, res, next);
+    }
 
     // Order Service
     if (reqPath.startsWith('/api/user/orders') || 

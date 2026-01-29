@@ -53,7 +53,7 @@ function Orders() {
       
       <div className="orders-container">
         <div className="orders-header">
-          <h1>📦 My Orders</h1>
+          <h1><span className="emoji">📦</span> My Orders</h1>
           <p>View your order history</p>
         </div>
 

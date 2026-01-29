@@ -52,9 +52,6 @@ function Navbar() {
           <Link to="/cart" className="nav-link" onClick={closeMobileMenu}>
             🛒 Cart
           </Link>
-          <Link to="/orders" className="nav-link" onClick={closeMobileMenu}>
-            📦 My Orders
-          </Link>
           <Link to="/profile" className="nav-link" onClick={closeMobileMenu}>
             👤 Profile
           </Link>
@@ -63,9 +60,7 @@ function Navbar() {
               ⚡ Admin
             </Link>
           )}
-          <button onClick={toggleTheme} className="nav-link theme-toggle" title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
+
           <button onClick={handleLogout} className="nav-link logout-btn">
             🚪 Logout
           </button>

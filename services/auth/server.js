@@ -453,6 +453,159 @@ app.post('/api/user/profile-photo', upload.single('profilePhoto'), async (req, r
     }
 });
 
+// Update User Profile
+app.patch('/api/user/profile', async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ error: 'Not authenticated' });
+    
+    try {
+        const { username, phoneNumber, address } = req.body;
+        const user = await User.findById(req.user._id);
+        
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        // Check if username is being changed and if it's already taken
+        if (username && username !== user.username) {
+            const existingUser = await User.findOne({ username });
+            if (existingUser) {
+                return res.status(400).json({ error: 'Username already taken' });
+            }
+            user.username = username;
+        }
+        
+        if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
+        if (address !== undefined) user.address = address;
+        
+        await user.save();
+        
+        res.json({ 
+            message: 'Profile updated successfully', 
+            user: { 
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                phoneNumber: user.phoneNumber,
+                address: user.address,
+                isAdmin: user.isAdmin,
+                isVerified: user.isVerified
+            }
+        });
+    } catch (err) {
+        console.error('Profile update error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Request Email Change - sends OTP to current email
+app.post('/api/user/email/request-change', async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ error: 'Not authenticated' });
+    
+    try {
+        const { newEmail } = req.body;
+        const user = await User.findById(req.user._id);
+        
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        if (!newEmail || !newEmail.includes('@')) {
+            return res.status(400).json({ error: 'Invalid email address' });
+        }
+        
+        // Check if new email is already taken
+        const existingUser = await User.findOne({ email: newEmail });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already in use by another account' });
+        }
+        
+        // Generate OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+        
+        // Store in session
+        req.session.emailChange = {
+            newEmail,
+            otp,
+            otpExpires: otpExpires.getTime()
+        };
+        
+        // Send OTP to CURRENT email
+        let emailResult = { success: false };
+        if (user.email) {
+            try {
+                emailResult = await sendOTPEmail(user.email, otp, 'email-change');
+            } catch (e) {
+                console.error('Email send error:', e);
+            }
+        }
+        
+        req.session.save(() => {
+            res.json({ 
+                message: 'Verification code sent to your current email',
+                emailSuccess: emailResult.success,
+                fallbackOtp: emailResult.success ? null : otp // For development/testing
+            });
+        });
+    } catch (err) {
+        console.error('Email change request error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Confirm Email Change - verify OTP and update email
+app.post('/api/user/email/confirm-change', async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ error: 'Not authenticated' });
+    
+    try {
+        const { otp } = req.body;
+        const sessionData = req.session.emailChange;
+        
+        if (!sessionData) {
+            return res.status(400).json({ error: 'No email change request found. Please request again.' });
+        }
+        
+        if (Date.now() > sessionData.otpExpires) {
+            delete req.session.emailChange;
+            return res.status(400).json({ error: 'Verification code expired. Please request again.' });
+        }
+        
+        if (sessionData.otp !== otp) {
+            return res.status(400).json({ error: 'Invalid verification code' });
+        }
+        
+        // Update email
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        user.email = sessionData.newEmail;
+        await user.save();
+        
+        // Clear session
+        delete req.session.emailChange;
+        
+        req.session.save(() => {
+            res.json({ 
+                message: 'Email updated successfully',
+                user: { 
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    phoneNumber: user.phoneNumber,
+                    address: user.address,
+                    isAdmin: user.isAdmin,
+                    isVerified: user.isVerified
+                }
+            });
+        });
+    } catch (err) {
+        console.error('Email change confirm error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // Admin middleware
 const isAdmin = async (req, res, next) => {
     if (!req.isAuthenticated()) {

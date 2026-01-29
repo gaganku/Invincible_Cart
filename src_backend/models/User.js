@@ -7,6 +7,9 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, sparse: true }, // User's email (required for local signup, optional for Google initially but good to have)
     phoneNumber: { type: String, sparse: true }, // Mobile number for SMS 2FA
     displayName: { type: String }, // User's display name from Google
+    address: { type: String }, // User's shipping address
+    profileAvatar: { type: String, default: 'default' }, // Emoji avatar ID or 'custom' for uploaded
+    profilePhoto: { type: String }, // URL to uploaded profile photo
     isVerified: { type: Boolean, default: false },
     isAdminVerified: { type: Boolean, default: false },
     verificationToken: { type: String },

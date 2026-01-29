@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from '../services/api';
 import Navbar from '../components/Navbar';
 import Pagination from '../components/Pagination';
@@ -6,6 +7,9 @@ import ConfirmationModal from '../components/ConfirmationModal';
 import './Admin.css';
 
 function Admin() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   const [activeTab, setActiveTab] = useState('orders');
   const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
@@ -18,18 +22,6 @@ function Admin() {
   const [usersPage, setUsersPage] = useState(1);
   const [productsPage, setProductsPage] = useState(1);
   const itemsPerPage = 7;
-  
-  // Product form state
-  const [showProductForm, setShowProductForm] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
-  const [productForm, setProductForm] = useState({
-    name: '',
-    description: '',
-    image: '',
-    price: '',
-    stock: '',
-    categories: ''
-  });
 
   // Search and Filter State
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,6 +52,15 @@ function Admin() {
       type
     });
   };
+
+  // Set active tab from location state (when returning from ProductForm)
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+      // Clear the state to prevent persisting
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     loadData();
@@ -139,62 +140,16 @@ function Admin() {
     );
   };
 
-  const handleProductFormChange = (e) => {
-    const { name, value } = e.target;
-    setProductForm(prev => ({ ...prev, [name]: value }));
-  };
-
+  // Navigate to add product page
   const handleAddProduct = () => {
-    setEditingProduct(null);
-    setProductForm({
-      name: '',
-      description: '',
-      image: '',
-      price: '',
-      stock: '',
-      categories: ''
-    });
-    setShowProductForm(true);
+    navigate('/admin/product/new');
   };
 
+  // Navigate to edit product page
   const handleEditProduct = (product) => {
-    setEditingProduct(product);
-    setProductForm({
-      name: product.name,
-      description: product.description,
-      image: product.image,
-      price: product.price.toString(),
-      stock: product.stock.toString(),
-      categories: (product.categories || []).join(', ')
+    navigate(`/admin/product/edit/${product._id || product.id}`, { 
+      state: { product } 
     });
-    setShowProductForm(true);
-  };
-
-  const handleSaveProduct = async (e) => {
-    e.preventDefault();
-    try {
-      const productData = {
-        ...productForm,
-        price: parseFloat(productForm.price),
-        stock: parseInt(productForm.stock),
-        categories: productForm.categories
-          .split(',')
-          .map(cat => cat.trim())
-          .filter(cat => cat.length > 0)
-      };
-
-      if (editingProduct) {
-        await api.updateProduct(editingProduct.id, productData);
-      } else {
-        await api.addProduct(productData);
-      }
-
-      setShowProductForm(false);
-      setEditingProduct(null);
-      await loadProducts();
-    } catch (error) {
-      alert('Failed to save product');
-    }
   };
 
   const handleDeleteProduct = (productId, productName) => {
@@ -300,7 +255,7 @@ function Admin() {
       
       <div className="admin-container">
         <div className="admin-header">
-          <h1>⚡ Admin Dashboard</h1>
+          <h1><span className="emoji">⚡</span> Admin Dashboard</h1>
           {activeTab === 'orders' && (
             <button onClick={handleDownloadReport} className="btn-download">
               📥 Download Report
@@ -398,11 +353,11 @@ function Admin() {
           <>
             <div className="admin-stats">
               <div className="stat-card">
-                <h3>📦 Total Orders</h3>
+                <h3><span className="emoji">📦</span> Total Orders</h3>
                 <p className="stat-value">{stats.total}</p>
               </div>
               <div className="stat-card">
-                <h3>💰 Total Revenue</h3>
+                <h3><span className="emoji">💰</span> Total Revenue</h3>
                 <p className="stat-value">${stats.revenue.toFixed(2)}</p>
               </div>
             </div>
@@ -531,91 +486,6 @@ function Admin() {
         {activeTab === 'products' && (
           <div className="products-table-container">
             <h2>All Products ({products.length})</h2>
-            
-            {showProductForm && (
-              <div className="product-form-overlay">
-                <div className="product-form-modal">
-                  <h3>{editingProduct ? '✏️ Edit Product' : '➕ Add New Product'}</h3>
-                  <form onSubmit={handleSaveProduct}>
-                    <div className="form-group">
-                      <label>Product Name *</label>
-                      <input 
-                        type="text" 
-                        name="name"
-                        value={productForm.name}
-                        onChange={handleProductFormChange}
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Description *</label>
-                      <textarea 
-                        name="description"
-                        value={productForm.description}
-                        onChange={handleProductFormChange}
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Image URL *</label>
-                      <input 
-                        type="url" 
-                        name="image"
-                        value={productForm.image}
-                        onChange={handleProductFormChange}
-                        required
-                      />
-                    </div>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Price ($) *</label>
-                        <input 
-                          type="number" 
-                          step="0.01"
-                          name="price"
-                          value={productForm.price}
-                          onChange={handleProductFormChange}
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Stock *</label>
-                        <input 
-                          type="number" 
-                          name="stock"
-                          value={productForm.stock}
-                          onChange={handleProductFormChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <label>Categories (comma-separated)</label>
-                      <input 
-                        type="text" 
-                        name="categories"
-                        value={productForm.categories}
-                        onChange={handleProductFormChange}
-                        placeholder="e.g., Electronics, Gaming, Accessories"
-                      />
-                      <small className="form-hint">💡 Enter multiple categories separated by commas</small>
-                    </div>
-                    <div className="form-actions">
-                      <button type="submit" className="btn-save">
-                        💾 {editingProduct ? 'Update' : 'Add'} Product
-                      </button>
-                      <button 
-                        type="button" 
-                        onClick={() => setShowProductForm(false)}
-                        className="btn-cancel"
-                      >
-                        ✖ Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
             
             {products.length === 0 ? (
               <p className="no-data">No products yet</p>

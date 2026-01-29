@@ -9,7 +9,7 @@
     "server": "concurrently \"node services/gateway/server.js\" \"node services/auth/server.js\" \"node services/products/server.js\" \"node services/orders/server.js\"",
     "client": "cd client && npm run dev",
     "start": "npm run dev",
-    "build": "cd client && npm run build"
+    "build": "cd client && npm install && npm run build"
   },
   "keywords": [
     "react",

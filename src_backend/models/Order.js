@@ -5,6 +5,8 @@ const OrderSchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     amount: { type: Number, required: true },
     status: { type: String, default: 'pending' }, // pending, confirmed, shipped, cancelled
+    shippingAddress: { type: String },
+    phoneNumber: { type: String },
     date: { type: Date, default: Date.now }
 }, { timestamps: true });
 

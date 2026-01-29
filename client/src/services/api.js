@@ -62,6 +62,39 @@ export const api = {
     return res.json();
   },
 
+  // User profile
+  updateProfile: async (profileData) => {
+    const res = await fetch(`${API_BASE}/api/user/profile`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(profileData)
+    });
+    return res.json();
+  },
+
+  // Request email change - sends OTP to current email
+  requestEmailChange: async (newEmail) => {
+    const res = await fetch(`${API_BASE}/api/user/email/request-change`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ newEmail })
+    });
+    return res.json();
+  },
+
+  // Confirm email change with OTP
+  confirmEmailChange: async (otp) => {
+    const res = await fetch(`${API_BASE}/api/user/email/confirm-change`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ otp })
+    });
+    return res.json();
+  },
+
   // Product endpoints
   getProducts: async () => {
     const res = await fetch(`${API_BASE}/api/products`, {

@@ -6,8 +6,20 @@
 [data-theme="dark"] .profile-page,
 [data-theme="dark"] .cart-page,
 [data-theme="dark"] .admin-page,
+[data-theme="dark"] .auth-page {
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%) !important;
+}
+
 [data-theme="dark"] .auth-container {
-  background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%) !important;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
 [data-theme="dark"] .home-page::before,
@@ -37,34 +49,42 @@
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* High Contrast Cards */
+/* Glossy Glass Cards */
 [data-theme="dark"] .product-card,
 [data-theme="dark"] .order-card,
 [data-theme="dark"] .profile-card,
 [data-theme="dark"] .cart-item,
-[data-theme="dark"] .stat-card {
-  background: linear-gradient(135deg, rgba(30, 30, 46, 0.95), rgba(24, 24, 37, 0.95)) !important;
-  border: 2px solid rgba(139, 92, 246, 0.3) !important;
+[data-theme="dark"] .cart-summary,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .empty-cart {
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(139, 92, 246, 0.2),
-    0 0 20px rgba(139, 92, 246, 0.1) !important;
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
 [data-theme="dark"] .product-card:hover,
 [data-theme="dark"] .order-card:hover,
 [data-theme="dark"] .cart-item:hover {
-  border-color: rgba(139, 92, 246, 0.6) !important;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08)) !important;
+  border-color: rgba(167, 139, 250, 0.4) !important;
   box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.7),
-    0 0 40px rgba(139, 92, 246, 0.3),
-    inset 0 1px 0 rgba(139, 92, 246, 0.4) !important;
+    0 12px 40px rgba(102, 126, 234, 0.25),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    0 0 30px rgba(139, 92, 246, 0.15) !important;
 }
 
 /* Text Colors */
 [data-theme="dark"] .product-name,
 [data-theme="dark"] .order-id,
 [data-theme="dark"] .info-label,
+[data-theme="dark"] .cart-summary h2,
 [data-theme="dark"] h3 {
   background: linear-gradient(135deg, #a78bfa, #60a5fa) !important;
   -webkit-background-clip: text !important;
@@ -72,30 +92,49 @@
   background-clip: text !important;
 }
 
+/* Fix emojis in headings - must appear AFTER the h3 rule */
+[data-theme="dark"] h3 .emoji,
+[data-theme="dark"] h1 .emoji,
+[data-theme="dark"] h2 .emoji,
+[data-theme="dark"] h4 .emoji,
+[data-theme="dark"] .emoji,
+[data-theme="dark"] .action-icon,
+[data-theme="dark"] .setting-icon,
+[data-theme="dark"] .avatar-emoji,
+[data-theme="dark"] .avatar-option-emoji {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  color: initial !important;
+}
+
 [data-theme="dark"] .product-description,
 [data-theme="dark"] .order-product p,
 [data-theme="dark"] .info-value,
 [data-theme="dark"] .item-details p,
+[data-theme="dark"] .summary-row span,
+[data-theme="dark"] .summary-total,
 [data-theme="dark"] p {
   color: #cbd5e1 !important;
 }
 
-/* Buttons */
+/* Glossy Buttons */
 [data-theme="dark"] .buy-button,
-[data-theme="dark"] .checkout-btn {
-  background: linear-gradient(135deg, #8b5cf6, #3b82f6) !important;
-  border: 2px solid rgba(139, 92, 246, 0.5) !important;
+[data-theme="dark"] .checkout-btn,
+[data-theme="dark"] .submit-button {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   box-shadow: 
-    0 8px 25px rgba(139, 92, 246, 0.4),
-    0 0 20px rgba(139, 92, 246, 0.2),
+    0 8px 25px rgba(102, 126, 234, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
 [data-theme="dark"] .buy-button:hover,
-[data-theme="dark"] .checkout-btn:hover {
+[data-theme="dark"] .checkout-btn:hover,
+[data-theme="dark"] .submit-button:hover {
   box-shadow: 
-    0 12px 35px rgba(139, 92, 246, 0.6),
-    0 0 40px rgba(139, 92, 246, 0.4),
+    0 12px 35px rgba(102, 126, 234, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
 }
 
@@ -270,4 +309,99 @@
 
 [data-theme="light"] .auth-box label {
   color: #2d3748 !important;
+}
+
+/* Light Mode - Profile Page Fixes */
+[data-theme="light"] .profile-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="light"] .profile-header h1,
+[data-theme="light"] .page-header h1 {
+  color: #1a202c !important;
+}
+
+[data-theme="light"] .profile-header p,
+[data-theme="light"] .page-header p,
+[data-theme="light"] .profile-subtitle {
+  color: #4a5568 !important;
+}
+
+[data-theme="light"] .profile-section h3 {
+  color: #667eea !important;
+}
+
+[data-theme="light"] .info-label {
+  color: #4a5568 !important;
+}
+
+[data-theme="light"] .info-value {
+  color: #1a202c !important;
+}
+
+/* Light Mode Toggle Buttons */
+[data-theme="light"] .toggle-btn {
+  background: rgba(102, 126, 234, 0.1) !important;
+  color: #667eea !important;
+  border: 1px solid rgba(102, 126, 234, 0.3) !important;
+}
+
+[data-theme="light"] .toggle-btn:hover {
+  background: rgba(102, 126, 234, 0.2) !important;
+  border-color: rgba(102, 126, 234, 0.5) !important;
+}
+
+[data-theme="light"] .toggle-btn.active {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  color: white !important;
+  border: none !important;
+}
+
+[data-theme="light"] .toggle-btn.inactive {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #6b7280 !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Light Mode Buy Button - Gel-like */
+[data-theme="light"] .buy-button {
+  background: rgba(102, 126, 234, 0.12) !important;
+  color: #667eea !important;
+  border: 1px solid rgba(102, 126, 234, 0.25) !important;
+}
+
+[data-theme="light"] .buy-button:hover {
+  background: rgba(102, 126, 234, 0.2) !important;
+  border-color: rgba(102, 126, 234, 0.4) !important;
+}
+
+/* Light Mode Checkout Button - Gel-like */
+[data-theme="light"] .checkout-btn {
+  background: rgba(102, 126, 234, 0.12) !important;
+  color: #667eea !important;
+  border: 1px solid rgba(102, 126, 234, 0.25) !important;
+}
+
+[data-theme="light"] .checkout-btn:hover {
+  background: rgba(102, 126, 234, 0.2) !important;
+}
+
+/* Dark Mode Buy Button - Gel-like with white text */
+[data-theme="dark"] .buy-button {
+  background: rgba(139, 92, 246, 0.15) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+}
+
+[data-theme="dark"] .buy-button:hover {
+  background: rgba(139, 92, 246, 0.25) !important;
+  border-color: rgba(139, 92, 246, 0.5) !important;
+}
+
+/* Dark Mode Checkout Button - Gel-like */
+[data-theme="dark"] .checkout-btn {
+  background: rgba(139, 92, 246, 0.15) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
 }

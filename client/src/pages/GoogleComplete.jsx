@@ -19,7 +19,7 @@ function GoogleComplete() {
 
     try {
       const data = await api.completeGoogleProfile(username, phone);
-      
+     
       if (data.error) {
         setError(data.error);
       } else if (data.username) {
@@ -78,3 +78,8 @@ function GoogleComplete() {
 }
 
 export default GoogleComplete;
+
+
+
+
+

@@ -29,8 +29,21 @@ export const ThemeProvider = ({ children }) => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
+  const [liveBackgroundEnabled, setLiveBackgroundEnabled] = useState(() => {
+    const saved = localStorage.getItem('liveBackground');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('liveBackground', JSON.stringify(liveBackgroundEnabled));
+  }, [liveBackgroundEnabled]);
+
+  const toggleLiveBackground = () => {
+    setLiveBackgroundEnabled(prev => !prev);
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, liveBackgroundEnabled, toggleLiveBackground }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -83,7 +83,7 @@
                    │
                    ▼
          ┌──────────────────┐
-         │   🗄️ MongoDB      │
+         │   🗄️ MongoDB     │
          │    Port: 27017   │
          │                  │
          │  Collections:    │
