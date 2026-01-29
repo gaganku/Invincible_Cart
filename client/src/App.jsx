@@ -14,6 +14,7 @@ import Orders from './pages/Orders';
 import Admin from './pages/Admin';
 import ProductForm from './pages/ProductForm';
 import SquareBot from './components/SquareBot';
+import WhatsAppWidget from './components/WhatsAppWidget';
 import SakuraBackground from './components/SakuraBackground';
 import InteractiveBackground from './components/InteractiveBackground';
 import './App.css';
@@ -99,6 +100,7 @@ function App() {
             } />
           </Routes>
            <SquareBot /> 
+           <WhatsAppWidget />
         </div>
       </AuthProvider>
     </ToastProvider>

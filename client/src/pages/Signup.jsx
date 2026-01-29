@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { api } from '../services/api';
 import './Auth.css';
 
@@ -12,6 +12,15 @@ function Signup() {
   });
   const [otp, setOtp] = useState('');
   const [show2FA, setShow2FA] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const phone = params.get('phone');
+    if (phone) {
+      setFormData(prev => ({ ...prev, phoneNumber: phone }));
+    }
+  }, [location]);
   const [fallbackOtp, setFallbackOtp] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
