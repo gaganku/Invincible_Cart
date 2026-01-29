@@ -83,6 +83,12 @@ const isAuthenticated = (req, res, next) => {
 };
 
 const isAdmin = async (req, res, next) => {
+    // Check for Bot Token (Remote Access)
+    const botToken = req.headers['x-bot-token'];
+    if (botToken && botToken === process.env.ADMIN_BOT_TOKEN) {
+        return next();
+    }
+
     if (!req.isAuthenticated()) return res.status(401).json({ error: 'Not authenticated' });
     const user = await User.findById(req.user._id);
     if (!user || !user.isAdmin) return res.status(403).json({ error: 'Admin access required' });
@@ -574,6 +580,61 @@ app.post('/api/user/email/confirm-change', isAuthenticated, async (req, res) => 
         await user.save();
         delete req.session.emailChange;
         res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.get('/api/admin/stats', isAdmin, async (req, res) => {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const ordersToday = await Order.find({ date: { $gte: today } });
+        const totalOrders = await Order.countDocuments();
+        const revenueToday = ordersToday.reduce((sum, o) => sum + o.amount, 0);
+        const topProducts = await Order.aggregate([
+            { $group: { _id: "$productId", count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 3 }
+        ]);
+
+        await Product.populate(topProducts, { path: '_id', select: 'name' });
+
+        res.json({
+            today: {
+                orders: ordersToday.length,
+                revenue: revenueToday
+            },
+            allTime: {
+                orders: totalOrders
+            },
+            topProducts: topProducts.map(p => ({ name: p._id?.name || 'Unknown', count: p.count }))
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.get('/api/admin/users/lookup/:username', isAdmin, async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username }).select('-password -otpCode');
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        
+        const orderCount = await Order.countDocuments({ userId: user._id });
+        res.json({
+            user,
+            orderCount
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.get('/api/admin/low-stock', isAdmin, async (req, res) => {
+    try {
+        const lowStock = await Product.find({ stock: { $lt: 5 } }).limit(10);
+        res.json(lowStock);
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
     }
