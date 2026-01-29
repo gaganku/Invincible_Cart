@@ -640,6 +640,16 @@ app.get('/api/admin/low-stock', isAdmin, async (req, res) => {
     }
 });
 
+app.get('/api/admin/users/phones', isAdmin, async (req, res) => {
+    try {
+        const users = await User.find({ isVerified: true, phoneNumber: { $exists: true, $ne: '' } }).select('phoneNumber');
+        const phones = users.map(u => u.phoneNumber);
+        res.json(phones);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 app.get('/api/report', isAdmin, async (req, res) => {
     try {
         const orders = await Order.find().populate('userId').populate('productId');
