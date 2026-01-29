@@ -549,7 +549,7 @@ app.patch('/api/user/profile', isAuthenticated, async (req, res) => {
         if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
         if (address !== undefined) user.address = address;
         await user.save();
-        res.json(user);
+        res.json({ user });
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
     }
