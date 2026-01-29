@@ -616,6 +616,78 @@ app.get('/api/admin/stats', isAdmin, async (req, res) => {
     }
 });
 
+// --- BOT SPECIFIC ENDPOINTS (Admin Auth Required) ---
+
+// Find user by phone (cleaned)
+app.get('/api/admin/users/by-phone/:phone', isAdmin, async (req, res) => {
+    try {
+        const phone = req.params.phone.replace(/\D/g, '').slice(-10); // Last 10 digits
+        const user = await User.findOne({ 
+            phoneNumber: { $regex: phone + '$' } 
+        }).select('-password -otpCode');
+        
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Get recent orders for bot
+app.get('/api/admin/orders/user/:userId', isAdmin, async (req, res) => {
+    try {
+        const orders = await Order.find({ userId: req.params.userId })
+            .populate('productId', 'name price')
+            .sort({ date: -1 })
+            .limit(5);
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Direct Cart Management (for Bot)
+app.get('/api/admin/cart/:userId', isAdmin, async (req, res) => {
+    try {
+        let cart = await Cart.findOne({ userId: req.params.userId }).populate('items.productId');
+        if (!cart) cart = await Cart.create({ userId: req.params.userId, items: [] });
+        res.json(cart);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.post('/api/admin/cart/:userId', isAdmin, async (req, res) => {
+    try {
+        const { productId, quantity } = req.body;
+        const query = getProductQuery(productId);
+        const product = await Product.findOne(query);
+        if (!product) return res.status(404).json({ error: 'Product not found' });
+
+        let cart = await Cart.findOne({ userId: req.params.userId });
+        if (!cart) cart = new Cart({ userId: req.params.userId, items: [] });
+
+        const itemIndex = cart.items.findIndex(i => i.productId.toString() === productId);
+        if (itemIndex > -1) cart.items[itemIndex].quantity += (quantity || 1);
+        else cart.items.push({ productId, quantity: (quantity || 1) });
+
+        await cart.save();
+        res.json({ success: true, cart });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.get('/api/admin/orders/track/:orderId', isAdmin, async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.orderId).populate('productId', 'name');
+        if (!order) return res.status(404).json({ error: 'Order not found' });
+        res.json(order);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 app.get('/api/admin/users/lookup/:username', isAdmin, async (req, res) => {
     try {
         const user = await User.findOne({ username: req.params.username }).select('-password -otpCode');

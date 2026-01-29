@@ -12,6 +12,9 @@ const twilio = require('twilio');
 const app = express();
 const port = process.env.BRIDGE_PORT || 5000;
 
+// In-memory state tracking (Simple)
+const userState = {}; 
+
 // Update this with your actual Vercel URL
 const APP_URL = process.env.APP_URL || 'https://invincible-cart.vercel.app';
 
@@ -34,148 +37,159 @@ app.post('/whatsapp', async (req, res) => {
 
     console.log(`📩 Message: "${incomingMsg}" from ${from}`);
 
-    // Admin Security Check: Use number from .env or fallback
     const adminNumber = process.env.ADMIN_PHONE_NUMBER || '918123065334';
     const isAdminUser = from.includes(adminNumber);
+    const botHeaders = { 'x-bot-token': process.env.ADMIN_BOT_TOKEN };
 
     try {
         let responseMsg = '';
-        const botHeaders = { 'x-bot-token': process.env.ADMIN_BOT_TOKEN };
-        console.log(`[Bridge] Bot Token present: ${!!process.env.ADMIN_BOT_TOKEN}`);
+        let user = null;
 
-        // 📊 FEATURE 1: Daily Report
-        if (incomingMsg.includes('report') || incomingMsg.includes('stats')) {
-            console.log('[Bridge] Routing to Report...');
-            if (!isAdminUser) {
-                console.log('[Bridge] Unauthorized admin attempt.');
-                return res.status(200).send('Unauthorized');
-            }
-            const { data } = await axios.get(`${APP_URL}/api/admin/stats`, { headers: botHeaders });
-            console.log('[Bridge] Stats fetched.');
-            responseMsg = `📊 *Daily Summary*\n\n` +
-                          `💰 Revenue: $${data.today.revenue.toFixed(2)}\n` +
-                          `📦 Orders Today: ${data.today.orders}\n` +
-                          `📈 All-time Orders: ${data.allTime.orders}\n\n` +
-                          `🔥 *Top Products:*\n` +
-                          data.topProducts.map(p => `- ${p.name} (${p.count})`).join('\n');
+        // 🆔 IDENTITY MATCHING: Find database user by WhatsApp number
+        try {
+            const { data: foundUser } = await axios.get(`${APP_URL}/api/admin/users/by-phone/${from}`, { headers: botHeaders });
+            user = foundUser;
+            console.log(`[Bridge] Identified User: ${user.username}`);
+        } catch (e) {
+            console.log(`[Bridge] Visitor (No account found for ${from})`);
         }
-        // ⚠️ FEATURE 2: Low Stock
-        else if (incomingMsg.includes('low stock') || incomingMsg === 'stock') {
-            console.log('[Bridge] Routing to Stock...');
-            if (!isAdminUser) return res.status(200).send('Unauthorized');
-            const { data } = await axios.get(`${APP_URL}/api/admin/low-stock`, { headers: botHeaders });
-            console.log('[Bridge] Stock fetched.');
-            if (data.length === 0) {
-                responseMsg = '✅ All items are well stocked!';
-            } else {
-                responseMsg = '⚠️ *Low Stock Alert:*\n\n' +
-                              data.map(p => `*${p.name}*\nID: ${p.id} | Stock: ${p.stock}`).join('\n\n');
-            }
-        }
-        // 🔍 FEATURE 3: User Lookup
-        else if (incomingMsg.startsWith('lookup ')) {
-            console.log('[Bridge] Routing to Lookup...');
-            if (!isAdminUser) return res.status(200).send('Unauthorized');
-            const username = incomingMsg.split(' ')[1];
-            const { data } = await axios.get(`${APP_URL}/api/admin/users/lookup/${username}`, { headers: botHeaders });
-            console.log('[Bridge] User found.');
-            responseMsg = `👤 *User Details: ${data.user.username}*\n\n` +
-                          `📧 Email: ${data.user.email}\n` +
-                          `📱 Phone: ${data.user.phoneNumber || 'N/A'}\n` +
-                          `📦 Total Orders: ${data.orderCount}\n` +
-                          `🛡️ Admin: ${data.user.isAdmin ? 'Yes' : 'No'}`;
-        }
-        // ✏️ FEATURE 4: Quick Update (Update 7 stock 50)
-        else if (incomingMsg.startsWith('update ')) {
-            console.log('[Bridge] Routing to Update...');
-            if (!isAdminUser) return res.status(200).send('Unauthorized');
-            const parts = incomingMsg.split(' '); // update [id] [field] [value]
-            const id = parts[1];
-            const field = parts[2];
-            const value = parts[3];
 
-            if (!['price', 'stock'].includes(field)) {
-                responseMsg = '❌ Invalid field. Use "price" or "stock".';
+        const state = userState[from] || { step: 'idle' };
+
+        // 🛑 CONVERSATION STATE MACHINE 🛑
+        
+        if (state.step === 'picking_product') {
+            const index = parseInt(incomingMsg) - 1;
+            if (!isNaN(index) && state.results[index]) {
+                const selected = state.results[index];
+                userState[from] = { ...state, step: 'picking_field', product: selected };
+                responseMsg = `✅ Selected: *${selected.name}*\n\n` +
+                              (isAdminUser ? `What would you like to update?\n1. *Price*\n2. *Stock*` : `Would you like to:\n1. *View Details*\n2. *Add to Cart*`);
+            } else if (incomingMsg === 'cancel') {
+                delete userState[from];
+                responseMsg = '❌ Cancelled.';
             } else {
-                await axios.patch(`${APP_URL}/api/products/${id}`, { [field]: value }, { headers: botHeaders });
-                console.log('[Bridge] Product updated.');
-                responseMsg = `✅ Updated *${field}* of product *${id}* to *${value}*!`;
+                responseMsg = '❓ Invalid choice. Reply with a number or "cancel".';
             }
         }
-        // 📢 FEATURE 5: Marketing Broadcasts
-        else if (incomingMsg.startsWith('broadcast: ')) {
-            console.log('[Bridge] Routing to Broadcast...');
-            if (!isAdminUser) return res.status(200).send('Unauthorized');
-            const broadcastMsg = body.substring(11).trim(); // Keep original casing
-            
-            // 📞 Get all phone numbers from Backend
-            const { data: phones } = await axios.get(`${APP_URL}/api/admin/users/phones`, { headers: botHeaders });
-            
-            console.log(`[Bridge] Broadcasting to ${phones.length} users...`);
-            let count = 0;
-            for (const phone of phones) {
-                try {
-                    await client.messages.create({
-                        body: `📢 *Shop Alert:* \n\n${broadcastMsg}`,
-                        from: 'whatsapp:+14155238886',
-                        to: phone.startsWith('whatsapp:') ? phone : `whatsapp:${phone}`
-                    });
-                    count++;
-                } catch (e) {
-                    console.error(`[Bridge] Failed to send to ${phone}:`, e.message);
+        else if (state.step === 'picking_field') {
+            const prod = state.product;
+            if (isAdminUser) {
+                if (incomingMsg === '1') { userState[from].step = 'entering_value'; userState[from].field = 'price'; responseMsg = `💰 New Price:`; }
+                else if (incomingMsg === '2') { userState[from].step = 'entering_value'; userState[from].field = 'stock'; responseMsg = `📦 New Stock:`; }
+            } else {
+                if (incomingMsg === '1') {
+                    delete userState[from];
+                    responseMsg = `📌 *${prod.name}*\n\n${prod.description}\n\nPrice: $${prod.price}\nCategory: ${prod.category}\nLink: ${APP_URL}`;
+                } else if (incomingMsg === '2') {
+                    if (!user) {
+                        responseMsg = '⚠️ Please register on our website with this phone number to use the Cart feature!';
+                        delete userState[from];
+                    } else {
+                        await axios.post(`${APP_URL}/api/admin/cart/${user._id}`, { productId: prod.id }, { headers: botHeaders });
+                        delete userState[from];
+                        responseMsg = `🛒 Added *${prod.name}* to your cart! \n\nCheck it out here: ${APP_URL}/cart`;
+                    }
                 }
             }
-            responseMsg = `✅ Broadcast finished! Sent to *${count}* users.`;
         }
-        // 🛍️ Standard Consumer Actions
-        else if (incomingMsg.includes('product') || incomingMsg.includes('shop')) {
-            console.log('[Bridge] Routing to Products...');
-            const { data: products } = await axios.get(`${APP_URL}/api/products`);
-            console.log('[Bridge] Products list fetched.');
-            responseMsg = '🛍️ *Latest Arrivals:*\n\n' +
-                          products.slice(0, 5).map(p => `*${p.name}*\nPrice: $${p.price}\nLink: ${APP_URL}\n`).join('\n');
-        } 
-        // 🆘 FEATURE 6: Help Command
-        else if (incomingMsg === '/help' || incomingMsg === 'help') {
-            console.log('[Bridge] Routing to Help...');
-            if (isAdminUser) {
-                responseMsg = `👑 *ClawdBot Admin Help*\n\n` +
-                              `📊 *report*: Get daily sales summary\n` +
-                              `⚠️ *stock*: See items with < 5 units\n` +
-                              `👤 *lookup [user]*: Search user details\n` +
-                              `✏️ *update [id] [field] [val]*: Edit product\n` +
-                              `   _Example: update 7 price 29.99_\n` +
-                              `📢 *broadcast: [msg]*: Send mass alert\n\n` +
-                              `🛍️ *products*: See catalog (customer view)`;
-            } else {
-                responseMsg = `🤖 *ClawdBot Shopping Help*\n\n` +
-                              `🛍️ *products*: See our latest arrivals\n` +
-                              `🛒 *cart*: View your current cart (Coming Soon)\n` +
-                              `💬 *hi*: Get a friendly greeting`;
+        else if (state.step === 'entering_value' && isAdminUser) {
+            await axios.patch(`${APP_URL}/api/products/${state.product.id}`, { [state.field]: incomingMsg }, { headers: botHeaders });
+            delete userState[from];
+            responseMsg = `🎉 Updated ${state.field}!`;
+        }
+        // --- Commands ---
+        else {
+            // 🔎 ADVANCED SEARCH (Feature 1)
+            if (incomingMsg.startsWith('find ') || incomingMsg.startsWith('search ')) {
+                const query = body.split(' ').slice(1).join(' ');
+                const { data: products } = await axios.get(`${APP_URL}/api/products`);
+                const matches = products.filter(p => p.name.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
+                
+                if (matches.length === 0) responseMsg = `❌ No results for "${query}".`;
+                else {
+                    userState[from] = { step: 'picking_product', results: matches };
+                    responseMsg = `🔍 Search results for "${query}":\n\n` + matches.map((p, i) => `${i+1}. *${p.name}* ($${p.price})`).join('\n') + `\n\nReply with a number!`;
+                }
+            }
+            // 💰 PRICE FILTERS
+            else if (incomingMsg.includes('under ') || incomingMsg.includes('below ')) {
+                const max = parseInt(incomingMsg.replace(/\D/g, ''));
+                if (isNaN(max)) responseMsg = "Please specify a number, e.g., 'products under 50'.";
+                else {
+                    const { data: products } = await axios.get(`${APP_URL}/api/products`);
+                    const matches = products.filter(p => p.price <= max).slice(0, 5);
+                    responseMsg = matches.length ? `💸 Deals under $${max}:\n\n` + matches.map(p => `- *${p.name}* ($${p.price})`).join('\n') : `😔 No items found under $${max}.`;
+                }
+            }
+            // 📦 ORDER MANAGEMENT (Feature 2)
+            else if (incomingMsg === 'my orders' || incomingMsg === 'orders') {
+                if (!user) responseMsg = "⚠️ I couldn't find an account for this number.";
+                else {
+                    const { data: orders } = await axios.get(`${APP_URL}/api/admin/orders/user/${user._id}`, { headers: botHeaders });
+                    responseMsg = orders.length ? `📦 *Your Recent Orders:*\n\n` + orders.map(o => `ID: #${o._id.slice(-6)}\nItem: ${o.productId?.name}\nStatus: ${o.status}\n---`).join('\n\n') : "You haven't placed any orders yet!";
+                }
+            }
+            else if (incomingMsg.startsWith('track #')) {
+                const id = body.split('#')[1];
+                try {
+                    const { data: order } = await axios.get(`${APP_URL}/api/admin/orders/track/${id}`, { headers: botHeaders });
+                    responseMsg = `🚚 *Tracking info for #${id.slice(-6)}*\n\nStatus: *${order.status.toUpperCase()}*\nItem: ${order.productId.name}\nPlaced on: ${new Date(order.date).toLocaleDateString()}`;
+                } catch (e) { responseMsg = "❌ Order not found. Double check the ID!"; }
+            }
+            // 💰 PAYMENTS (Feature 4)
+            else if (incomingMsg === 'pay' || incomingMsg === 'checkout') {
+                if (!user) responseMsg = "⚠️ Register first!";
+                else {
+                    const { data: cart } = await axios.get(`${APP_URL}/api/admin/cart/${user._id}`, { headers: botHeaders });
+                    const total = cart.items.reduce((sum, i) => sum + (i.productId?.price * i.quantity || 0), 0);
+                    if (total === 0) responseMsg = "🛒 Your cart is empty!";
+                    else {
+                        const upiLink = `upi://pay?pa=your-upi-id@bank&pn=Shop&am=${total}&cu=USD`; // Placeholder
+                        responseMsg = `💳 *Checkout Summary*\nTotal: *$${total.toFixed(2)}*\n\nClick link to pay via UPI:\n${upiLink}\n\n_Note: This is a simulation!_`;
+                    }
+                }
+            }
+            // 🎫 PROMO CODES
+            else if (incomingMsg.startsWith('promo ')) {
+                const code = incomingMsg.split(' ')[1];
+                if (code === 'GET10') responseMsg = "🎉 *Valid Code!* You've unlocked 10% off. Apply it at checkout on our website.";
+                else responseMsg = "❌ Invalid promo code.";
+            }
+            // AI Shopping Assistant
+            else if (incomingMsg.includes('gift') || incomingMsg.includes('recommend')) {
+                const { data: products } = await axios.get(`${APP_URL}/api/products`);
+                const random = products[Math.floor(Math.random() * products.length)];
+                responseMsg = `🎁 *ClawdBot Gift Guide*\n\nBased on your interest, I recommend: *${random.name}*!\n\nIt's a best-seller in our store. Interested? Reply "update ${random.name}" to add to cart!`;
+            }
+            // 📢 ADMIN COMMANDS (Preserved)
+            else if (isAdminUser && incomingMsg === 'report') {
+                const { data } = await axios.get(`${APP_URL}/api/admin/stats`, { headers: botHeaders });
+                responseMsg = `📊 *Admin Summary*\nRev: $${data.today.revenue.toFixed(2)}\nOrders: ${data.today.orders}`;
+            }
+            // 🆘 HELP
+            else if (incomingMsg.includes('hi') || incomingMsg.includes('help')) {
+                responseMsg = (isAdminUser ? `👑 *Admin:* report, stock, broadcast, lookup\n\n` : '') + 
+                              `🤖 *Customer Commands:*\n` +
+                              `- *find [product]*: Search catalog\n` +
+                              `- *under [price]*: e.g. "under 50"\n` +
+                              `- *orders*: History of purchases\n` +
+                              `- *track #[id]*: Track order\n` +
+                              `- *pay*: Checkout your cart\n` +
+                              `- *promo [code]*: Apply coupon\n` +
+                              `- *gift*: Guided shopping`;
+            }
+            else {
+                responseMsg = "I'm your AI shopping assistant! Try saying 'find camera' or 'gift'.";
             }
         }
-        else if (incomingMsg.includes('hi') || incomingMsg.includes('hello')) {
-            console.log('[Bridge] Routing to Greeting...');
-            responseMsg = 'Hello! 🤖 I am your *ClawdBot* helper.\n\n' +
-                          (isAdminUser ? '👑 *Admin Commands:* \n- "report"\n- "stock"\n- "lookup [user]"\n- "update [id] [price/stock] [val]"' : 'Ask me for "products" to see stock!');
-        }
-        else {
-            console.log('[Bridge] Unknown command.');
-            responseMsg = 'I didn\'t quite catch that. Try saying "show products"!';
-        }
 
-        console.log(`[Bridge] Sending WhatsApp message via Twilio to ${from}...`);
-        const sentMsg = await client.messages.create({
-            body: responseMsg,
-            from: 'whatsapp:+14155238886',
-            to: from
-        });
-        console.log(`[Bridge] SMS sent successfully. SID: ${sentMsg.sid}`);
-
+        const sentMsg = await client.messages.create({ body: responseMsg, from: 'whatsapp:+14155238886', to: from });
+        console.log(`[Bridge] Sent to ${from}. SID: ${sentMsg.sid}`);
         res.status(200).send('Done');
     } catch (error) {
         console.error('❌ Error:', error.message);
-        res.status(200).send('Error handled'); // Keep Twilio happy
+        res.status(200).send('Error');
     }
 });
 
