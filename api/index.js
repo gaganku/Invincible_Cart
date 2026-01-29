@@ -209,7 +209,7 @@ const googleCallbackHandler = (req, res, next) => {
         req.session.googleAuth.emailSuccess = emailResult.success;
         if (!emailResult.success) req.session.googleAuth.fallbackOtp = otp;
 
-        const frontendUrl = process.env.BASE_URL || '';
+        const frontendUrl = process.env.BASE_URL ? `https://${process.env.BASE_URL}` : '';
         let redirectUrl = `${frontendUrl}/google-otp`;
         if (emailResult.etherealUrl) redirectUrl += `?preview=${encodeURIComponent(emailResult.etherealUrl)}`;
         

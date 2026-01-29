@@ -13,7 +13,7 @@ const configurePassport = () => {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             callbackURL: process.env.GOOGLE_CALLBACK_URL || 
                 (process.env.NODE_ENV === 'production' 
-                    ? `${process.env.BASE_URL}/api/auth/google/callback` 
+                    ? `https://${process.env.BASE_URL || process.env.VERCEL_URL}/api/auth/google/callback` 
                     : 'http://localhost:3000/auth/google/callback')
         }, async (accessToken, refreshToken, profile, done) => {
             try {
