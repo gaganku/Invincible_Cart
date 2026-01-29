@@ -4,36 +4,18 @@ Modern e-commerce application built with **React** frontend and **Node.js micros
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────────────────────────┐
-│   React Frontend (Vite)             │
-│   Port: 5173                        │
-│   - Modern UI with React Router     │
-│   - State Management                │
-│   - Responsive Design               │
-└──────────────┬──────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────┐
-│   Gateway Service                   │
-│   Port: 3000                        │
-│   - API Proxy                       │
-│   - Request Routing                 │
-└──────────────┬──────────────────────┘
-               │
-       ┌───────┼───────┐
-       ▼       ▼       ▼
-   ┌─────┐ ┌─────┐ ┌──────┐
-   │Auth │ │Prod │ │Order │
-   │3001 │ │3002 │ │ 3003 │
-   └──┬──┘ └──┬──┘ └───┬──┘
-      └───────┴────────┘
-              │
-              ▼
-      ┌──────────────┐
-      │   MongoDB    │
-      └──────────────┘
-```
+### Production (Vite + Vercel Serverless)
+In production, the microservices are consolidated into a single monolithic Express backend to work seamlessly with **Vercel Serverless Functions**.
+
+- **Frontend**: Built with Vite, served as static assets.
+- **Backend**: Single entry point at `api/index.js` handling all logic (Auth, Product, Orders).
+
+### Local Development (Microservices)
+Local development use a distributed microservice architecture behind a Gateway.
+- **Gateway**: localhost:3000
+- **Auth**: localhost:3001
+- **Product**: localhost:3002
+- **Order**: localhost:3003
 
 ## 🚀 Quick Start
 
@@ -96,7 +78,10 @@ shopping_cart_react/
 │   ├── public/            # Static Assets
 │   └── package.json
 │
-├── services/              # Backend Microservices
+├── api/                   # Consolidated Backend (for Vercel deployment)
+│   └── index.js          # Unified entry point
+│
+├── services/              # Backend Microservices (Local Development)
 │   ├── gateway/          # API Gateway (Port 3000)
 │   ├── auth/             # Auth Service (Port 3001)
 │   ├── products/         # Product Service (Port 3002)
@@ -108,8 +93,10 @@ shopping_cart_react/
 │   ├── middleware/      # Auth Middleware
 │   └── utils/           # Email Service
 │
+├── vercel.json          # Vercel Deployment Configuration
 ├── .env                 # Environment Variables
-└── package.json         # Root Package Config
+├── package.json         # Root Package Config
+└── README.md            # You are here
 ```
 
 ## 🎯 Features
@@ -137,6 +124,24 @@ shopping_cart_react/
 - ✅ MongoDB (Data Persistence)
 - ✅ Session Management (Shared Sessions)
 - ✅ Email Service (OTP, Confirmations)
+- ✅ **Monolithic Vercel Support** 🆕
+- ✅ **Robust ID Lookup (Numeric + ObjectId)** 🆕
+- ✅ **Rate Limiting Protection**
+
+## 🧪 Utility Scripts
+
+I've included scripts to help you set up and seed your database:
+
+```bash
+# Generate 100 random products into categories
+node add_100_products.js
+
+# Create default admin and regular users
+node create_users.js
+
+# Promote specific users to admin
+node check_admin_status.js
+```
 
 ## 🔧 Environment Variables
 
@@ -208,11 +213,12 @@ Gaming Mouse → Gaming, Electronics, Accessories
 Wireless Headphones → Electronics, Audio, Gaming
 ```
 
-### Benefits:
-- 🎯 Better product discovery
-- 🔍 Enhanced search and filtering
-- 📊 Improved product organization
-- 🎨 Beautiful visual categorization
+## ☁️ Vercel Deployment
+
+1.  **Repo**: Push code to GitHub.
+2.  **Import**: Connect your repo to Vercel.
+3.  **Env Variables**: Add `MONGODB_URI`, `SESSION_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `BASE_URL` (your deployment domain).
+4.  **Automatic**: Vercel handles the build and deployment via the `vercel.json` and `api/` folder.
 
 ## 📄 License
 MIT
