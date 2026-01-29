@@ -209,7 +209,12 @@ const googleCallbackHandler = (req, res, next) => {
         req.session.googleAuth.emailSuccess = emailResult.success;
         if (!emailResult.success) req.session.googleAuth.fallbackOtp = otp;
 
-        const frontendUrl = process.env.BASE_URL ? `https://${process.env.BASE_URL}` : '';
+        const getFrontendUrl = () => {
+            const rawBase = process.env.BASE_URL || process.env.VERCEL_URL || '';
+            const domain = rawBase.replace(/^https?:\/\//, '');
+            return domain ? `https://${domain}` : '';
+        };
+        const frontendUrl = getFrontendUrl();
         let redirectUrl = `${frontendUrl}/google-otp`;
         if (emailResult.etherealUrl) redirectUrl += `?preview=${encodeURIComponent(emailResult.etherealUrl)}`;
         
