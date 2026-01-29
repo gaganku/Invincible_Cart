@@ -459,6 +459,7 @@ app.post('/api/cart/checkout', isAuthenticated, async (req, res) => {
             orders.push(order);
         }
 
+        const itemCount = cart.items.length;
         cart.items = [];
         await cart.save();
         
@@ -472,7 +473,7 @@ app.post('/api/cart/checkout', isAuthenticated, async (req, res) => {
             // Send Email Notification
             await sendOrderConfirmationEmail(req.user.email, req.user.username, {
                 productName: orderData.productName,
-                quantity: cart.items.length,
+                quantity: itemCount,
                 total: orderData.totalAmount
             });
 
