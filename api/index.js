@@ -463,11 +463,21 @@ app.post('/api/cart/checkout', isAuthenticated, async (req, res) => {
         await cart.save();
         
         if (orders.length > 0) {
-            await sendOrderConfirmationEmail(req.user.email, req.user.username, {
+            const orderData = {
+                _id: orders[0]._id,
                 productName: orders[0].productId.name,
-                quantity: cart.items.length, // approximation
-                total: orders.reduce((acc, o) => acc + o.amount, 0)
+                totalAmount: orders.reduce((acc, o) => acc + o.amount, 0)
+            };
+
+            // Send Email Notification
+            await sendOrderConfirmationEmail(req.user.email, req.user.username, {
+                productName: orderData.productName,
+                quantity: cart.items.length,
+                total: orderData.totalAmount
             });
+
+            // Send WhatsApp Notification
+            await sendOrderConfirmation(req.user, orderData);
         }
 
         res.json({ message: 'Checkout successful', orders });
